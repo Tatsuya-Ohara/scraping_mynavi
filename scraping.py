@@ -14,7 +14,7 @@ wait_time = 3
 
 # 日付設定
 now = datetime.datetime.now()
-ymdhms = now.strftime("%Y%m%d%h%m%s")
+ymdhms = now.strftime("%Y%m%d%H%M%S")
 
 # パス
 OUTPUT_PATH = "./OUTPUT"
