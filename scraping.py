@@ -90,13 +90,10 @@ def main():
     # 検索ボタンクリック
     driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
     
-    # 空のDataFrame作成
-    df = pd.DataFrame()
-    
     # ログ用回数のカウント
     success = 0
     error = 0
-
+    recruits = []
     
     while True:
         name_elms = driver.find_elements(by=By.CSS_SELECTOR, value=".cassetteRecruit__heading.cassetteUseFloat")
@@ -108,11 +105,12 @@ def main():
                 copy = name_elm.find_element(by=By.CSS_SELECTOR, value=".cassetteRecruit__copy.boxAdjust").find_element(by=By.TAG_NAME, value="a")
                 label = name_elm.find_element(by=By.CSS_SELECTOR, value=".labelEmploymentStatus")
                 # DataFrameに対して辞書形式でデータを追加する
-                df = df.append(
-                    {"会社名": company_name.text, 
-                    "コピー": copy.text,
-                    "ラベル": label.text,
-                    }, ignore_index=True)
+                recruits.append(
+                    {
+                        "企業名": company_name.text,
+                        "キャッチコピー": copy.text,
+                        "ラベル": label.text,
+                    })
                 success += 1
                 log(f"[LOG:成功]{company_name.text}")
         except:
@@ -126,6 +124,9 @@ def main():
             print("最終ページまで到達しました。")
             log(f"[LOG:成功:{success}件、失敗:{error}件]最終ページまで到達しました。")
             break
+    
+    # df.appendは非推奨になったため、from_dictを使用
+    df = pd.DataFrame.from_dict(recruits, dtype=object)
     
     # 取得したデータをCSV出力
     df.to_csv(EXP_CSV_PATH, encoding="utf-8_sig")
